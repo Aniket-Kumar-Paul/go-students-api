@@ -1,1 +1,0 @@
-# A REST-API for students
