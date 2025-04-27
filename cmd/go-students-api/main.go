@@ -20,6 +20,7 @@ func main() {
 	// load config
 	cfg := config.MustLoad()
 
+
 	// database setup
 	storage, err := sqlite.New(cfg)
 	if err!=nil {
@@ -27,9 +28,12 @@ func main() {
 	}
 	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
 
+
 	// setup router
 	router := http.NewServeMux()
 	router.HandleFunc("POST /api/students", student.New(storage))
+	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
+
 
 	// setup server
 	server := http.Server{
@@ -38,6 +42,7 @@ func main() {
 	}
 	slog.Info("server started on :", slog.String("address", cfg.Addr))
 	fmt.Println("server started on : ", cfg.Addr)
+
 
 	// setup graceful shutdown using channels and signals
 	done := make(chan os.Signal, 1)
